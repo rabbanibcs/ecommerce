@@ -12,6 +12,12 @@ class Command(BaseCommand):
                             help='The new Django project name')
 
     def handle(self, *args, **kwargs):
+
+
+        # print(args)
+        # for key, value in kwargs.items():
+        #     print(key,'----', value)
+
         current_project_name = kwargs['current'][0]
         new_project_name = kwargs['new'][0]
 

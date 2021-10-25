@@ -3,8 +3,8 @@ import os
 import sys
 
 if __name__ == '__main__':
-    print('Hi, I am inside ....manage.py')
-    print('sys.argv from command line... ',sys.argv)
+    # print('Hi, I am inside ....manage.py')
+    # print('sys.argv from command line... ',sys.argv)
 
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.settings')
