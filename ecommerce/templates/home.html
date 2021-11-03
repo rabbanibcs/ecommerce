@@ -1,14 +1,12 @@
  {% extends 'base.html' %}
 
- {% block content %}
-    {% include 'banner.html' %}
- 
- 
-    {% include 'featured-items.html' %}
+   {% block title %}<title>Home</title>{% endblock title %}
 
- 
- 
- {% endblock content %}
+   {% block content %}
+      {% include 'nav.html' %}
+      {% include 'banner.html' %}
+      {% include 'featured-items.html' %}
+   {% endblock content %}
 
 
 

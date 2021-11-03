@@ -9,6 +9,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
  
+    'crispy_forms',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,11 +20,12 @@ INSTALLED_APPS = [
     
     'django.contrib.sites',
     'django_extensions',
+    # 'django_countries' ,
 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'core'
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -100,18 +102,21 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 # ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_USERNAME_REQUIRED = False
+
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
+LOGIN_REDIRECT_URL = 'home'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 
-
-
-
-
+STRIPE_PUBLIC_KEY='pk_test_51JrEIdJNSsUdNqE3Kw7CMZIgBOMPA4qCdqhgYmuk2uloCvwUDz8Pq0PdJPPc78xUaOGJ9Jtiii2MyX0uORqCRGPf00XGuUghI9'
+STRIPE_SECRET_KEY='sk_test_51JrEIdJNSsUdNqE3nYBBwnSqEZFdLIb96ES41dV82iNGRBbBIbrDwRHsBgmPdSqTtyt8aa9eimhvPXz9x3SJ3nIl00geWTlJku'
+STRIPE_WEBHOOK_SECRET=''
 
 
 

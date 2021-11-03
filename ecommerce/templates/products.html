@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+    {% block title %}
+    <title>Products</title>
+    
+    {% endblock title %}
 {% block content %}
+      {% include 'nav.html' %}
+
     <!-- Page Content -->
     <!-- Items Starts Here -->
     <div class="featured-page">
@@ -27,16 +33,18 @@
     <div class="featured container no-gutter">
 
         <div class="row posts">
+        {%for item in items %}
             <div id="1" class="item new col-md-4">
-              <a href="single-product.html">
+              <a href={{item.get_absolute_url }}>
                 <div class="featured-item">
                   <img src={% static "assets/images/product-01.jpg"  %} alt="">
-                  <h4>Proin vel ligula</h4>
-                  <h6>$15.00</h6>
+                  <h4>{{item.title}}</h4>
+                  <h6>${{item.price}}</h6>
                 </div>
               </a>
             </div>
-            <div id="2" class="item high col-md-4">
+        {% endfor %}
+            {% comment %} <div id="2" class="item high col-md-4">
               <a href="single-product.html">
                 <div class="featured-item">
                   <img src={% static "assets/images/product-02.jpg"  %} alt="">
@@ -107,13 +115,13 @@
                   <h6>$95.00</h6>
                 </div>
               </a>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 
 
     <!-- Featred Page Ends Here -->
-{% include 'page-navigation.html' %}
+{% include 'pagination.html' %}
 
     
 
