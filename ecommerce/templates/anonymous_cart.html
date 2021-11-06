@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_tags  %}
 
 {% block content %}
       {% include 'nav.html' %}
@@ -19,28 +20,27 @@
         </tr>
         </thead>
         <tbody>
-    {% for order_item in object.items.all %}
+    {% for item, quantity in object.items %}
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
-            {% comment %} <td>{{ order_item.item.title }}</td>  {% endcomment %}
-            <td><a href='{% url 'product' order_item.item.slug %}'>{{ order_item.item.title }}</a></td>
-            <td>{{ order_item.item.price }}</td>
+            <td><a href='{% url 'product' item.slug %}'>{{ item.title }}</a></td>
+            <td>{{ item.price }}</td>
             <td >
-                <a href={{ order_item.item.get_reduce_from_cart_url }} class='mr-2'> <span class="material-icons">remove_circle</span></a>
+                <a href={{ item.get_reduce_from_cart_url }} class='mr-2'> <span class="material-icons">remove_circle</span></a>
                 <b>
-                {{ order_item.quantity }}
+                {{ quantity }}
 
                 </b>
-                <a href="{{ order_item.item.get_add_to_cart_url }}" class='ml-2'><span class="material-icons">add_circle</span></a>
+                <a href="{{ item.get_add_to_cart_url }}" class='ml-2'><span class="material-icons">add_circle</span></a>
             </td>
             <td>
-            {% if order_item.item.discount_price %}
-                ${{ order_item.get_total_discount_item_price|floatformat:2 }}
-                <span class="badge badge-primary">Saving ${{ order_item.get_amount_saved|floatformat:2 }}</span>
+            {% if item.discount_price %}
+                ${{ item|get_total_discount_item_price:quantity|floatformat:2}}
+                <span class="badge badge-primary">Saving ${{ item|get_amount_saved:quantity|floatformat:2 }}</span>
             {% else %}
-                ${{ order_item.get_total_item_price|floatformat:2 }}
+                ${{ item|get_total_item_price:quantity|floatformat:2 }}
             {% endif %}
-            <a style='color: red;' href="{{ order_item.item.get_remove_from_cart_url }}">
+            <a style='color: red;' href="{{ item.get_remove_from_cart_url }}">
             <span class="material-icons ml-3">delete</span>
             </a>
             </td>

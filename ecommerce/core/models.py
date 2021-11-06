@@ -32,7 +32,7 @@ class Item(models.Model):
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
-    # image = models.ImageField()
+    image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -55,7 +55,7 @@ class Item(models.Model):
         return reverse("reduce-from-cart", kwargs={
             'slug': self.slug
         })
-
+    
 
 
 
@@ -104,7 +104,7 @@ class Order(models.Model):
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
+    ordered_date = models.DateTimeField(blank=True, null=True)
     ordered = models.BooleanField(default=False)
     address = models.ForeignKey(
         'Address', related_name='address', on_delete=models.SET_NULL, blank=True, null=True)

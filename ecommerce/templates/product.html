@@ -16,7 +16,8 @@
         <!--Grid column-->
         <div class="col-md-6 mb-4">
 
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="img-fluid" alt="">
+          {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="img-fluid" alt=""> {% endcomment %}
+          <img src={{ object.image.url}} class="img-fluid" alt="">
 
         </div>
         <!--Grid column-->
@@ -52,10 +53,11 @@
               Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
-            <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
-              Remove from cart
-            </a>
-
+            {% if item_in_cart %}
+              <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                Remove from cart
+              </a>
+            {% endif %}
           </div>
           <!--Content-->
 
@@ -126,6 +128,24 @@ function Hide() {
   document.getElementById("mess").style.visibility="hidden";
   //console.log('hi');
 }
+
+document.getElementById("add-to-cart").onclick = function() {
+
+  window.localStorage.setItem("item", "{{object.slug}}" );
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 

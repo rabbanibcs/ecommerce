@@ -40,7 +40,14 @@
           {% endif %}
             <li class="nav-item">
               <a class="nav-link" href={% url 'cart' %}>
-                <span class="material-icons">shopping_cart</span>{{user|total_cart_items}}
+                <span class="material-icons">shopping_cart</span>
+                {% if user.is_authenticated %}
+                  {{user|total_cart_items}}
+                {% else %}
+                  {{request.session.order_item|total_cart_items_}}
+                {% endif %}
+                
+                
               </a>
             </li>
           </ul>

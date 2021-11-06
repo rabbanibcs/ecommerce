@@ -3,12 +3,23 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-
+from django.contrib.sessions.models import Session
+from .utils import * 
+from .forms import *
 
 
 def home(request):
-    print(request.content_type,'req')
-    print(request.body,'body')
+    # print(request.content_type,'req')
+    # print(request.body,'body')
+
+    # session_key=request.session.session_key
+    # s = Session.objects.get(session_key=session_key)
+    # print(s['order_item'])
+    # print(dir(s))
+    # print(s.session_data)
+    # print(session_key)
+
+
 
     return render(request, 'home.html')
 
@@ -23,9 +34,27 @@ def products(request):
 
 
 def product(request,slug):
-    print(slug)
+    # print(slug,'slug')
+    item=Item.objects.get(slug=slug)
+    if request.user.is_authenticated:
+        order_qs = Order.objects.filter(user=request.user, ordered=False)
+        # print(order_qs.count(),'total orders')
+        if order_qs.exists():
+            order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__slug=item.slug).exists():
+            item_in_cart=True
+        else:
+            item_in_cart=False
+    else:
+        if item.slug in request.session.get('order_item',{}):
+            item_in_cart=True
+        else:
+            item_in_cart=False
+        
     context={
-        'object' : Item.objects.get(slug=slug)
+        'object' : item,
+        'item_in_cart':item_in_cart
     }
 
     return render(request, 'product.html',context)
@@ -33,107 +62,68 @@ def product(request,slug):
 def about(request):
 
     return render(request, 'about.html')
+
+
 def contactUs(request):
 
     return render(request, 'contact.html')
 
 
 
-# @login_required
 def add_to_cart(request, slug):
-    item = get_object_or_404(Item, slug=slug)
-
-    order_item, created = OrderItem.objects.get_or_create(
-        item=item,
-        user=request.user,
-        ordered=False
-    )
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    print(order_qs.count(),'total orders')
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item.quantity += 1
-            order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("cart")
-            
-        else:
-            order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("cart")
+    if request.user.is_authenticated:
+        add_to_cart_for_authenticated_user(request, slug)
+        return redirect("cart")
     else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        # return redirect("product",slug=slug)
+        add_to_cart_for_anonymous_user(request, slug)
         return redirect("cart")
 
-# @login_required
+
 def remove_from_cart(request,slug):
-    item = get_object_or_404(Item, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item= OrderItem.objects.filter(
-                user=request.user,
-                item=item,
-                ordered=False
-            )[0]
-            order.items.remove(order_item)
-            order_item.delete()
-            messages.info(request, "This item was removed from Cart.")
-            return redirect("cart")
-        else:
-            messages.info(request, "This item was not in your Cart.")
-            return redirect("cart")
-    else:
-        messages.info(request, "You do not have an active order")
+    if request.user.is_authenticated:
+        print('authenticated')
+        remove_from_cart_for_authenticated_user(request, slug)
         return redirect("cart")
+    else:
+        print('not authenticated')
+        remove_from_cart_for_anonymous_user(request, slug)
+        return redirect("cart")
+        # return redirect('product', slug=slug)
+
 
 
 # @login_required
 def reduce_from_cart(request,slug):
-    item = get_object_or_404(Item, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item= OrderItem.objects.filter(
-                user=request.user,
-                item=item,
-                ordered=False
-            )[0]
-            if order_item.quantity>1:
-                order_item.quantity -= 1
-                order_item.save()
-            else:
-                order.items.remove(order_item)
-                order_item.delete()
-            messages.info(request, "This item was ruduced from Cart.")
-            return redirect("cart")
-        else:
-            messages.info(request, "This item was not in your Cart.")
-            return redirect("cart")
-    else:
-        messages.info(request, "You do not have an active order")
+    if request.user.is_authenticated:
+        reduce_from_cart_for_authenticated_user(request, slug)
         return redirect("cart")
 
+    else:
+        reduce_from_cart_for_anonymous_user(request, slug)
+        return redirect("cart")
+
+
 def cart(request):
-    order = Order.objects.get(user=request.user, ordered=False)
 
-    context = {
-                'object': order
-            }
+    if request.user.is_authenticated:
+        order,created  = Order.objects.get_or_create(user=request.user, ordered=False)
+        context = {
+                    'object': order
+                }
+        return render(request, 'cart.html',context)
+    else:
+        order_item=request.session.get('order_item')
+        print(order_item,'order_item')
+        if order_item:
+            items = {}
+            for slug, quantity in order_item.items(): 
+                item = Item.objects.get(slug=slug)
+                items[item] = quantity
+            context = {'object': items, }
+            return render(request, 'anonymous_cart.html', context)
+        else:
+            return render(request, 'anonymous_cart.html')
 
-    return render(request, 'cart.html',context)
-
-
-from .forms import *
 
 def checkout(request):
 
@@ -156,6 +146,10 @@ def checkout(request):
                 default=set_default_shipping,
             )
             address.save()
+            order=Order.objects.get(user=request.user,ordered=False)
+            order.address=address
+            order.save()
+
             if payment_option=='S':
                 return redirect('payment', payment_option='stripe')
             elif payment_option=='P':
@@ -231,7 +225,14 @@ def create_checkout_session(request):
         payment.amount=amount
         payment.save()
 
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
         order.ordered=True
+        order.payment=payment
+        # order.address=address
+
         order.save()
         
         return JsonResponse({
