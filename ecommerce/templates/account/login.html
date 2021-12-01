@@ -9,8 +9,10 @@
     {% endblock title %}
 
 {% block content %}
-<div class="row mt-5 mb-5">
-<div class='col-md-4  mx-auto'>
+  {% include 'nav.html' %}
+
+<div class="row mt-5 mb-5 mx-1">
+<div class='col-md-4  mx-auto '><br>
 <h1 class='text-center'>{% trans "Sign In" %}</h1>
 
 {% get_providers as socialaccount_providers %}

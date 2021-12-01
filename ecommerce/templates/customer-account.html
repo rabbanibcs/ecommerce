@@ -1,0 +1,48 @@
+ {% extends 'base.html' %}
+
+   {% block title %}<title>Home</title>{% endblock title %}
+
+   {% block content %}
+      {% include 'ac-nav.html' %}
+       <br>
+         <br>
+         <br>
+
+      {% for order in orders  %}
+          <div class='container mb-2'>
+              <span class="badge bg-secondary p-2">Order #0{{order.id}}</span>
+            <span class="badge bg-primary p-2">Placed on {{order.ordered_date}}</span>
+          </div>
+
+
+
+        {% for items in order.items.all %}
+
+          <div class="container mb-4 pb-3 border-bottom">
+            <div ></div>
+            <div class="container d-flex justify-content-between mt-3">
+              <div class="col-md-2">
+                <a href="{{items.item.get_absolute_url}}">
+                  <img width="100px" src="{{items.item.image.url}}" alt="">
+                </a>
+              </div>
+              <div class="col-md-4"><a href="{{items.item.get_absolute_url}}"><h6>{{items.item.title}} </h6></a></div>
+              <div class="col-md-1">Qty:{{items.quantity}}</div>
+              <div class="col-md-2">Processing</div>
+              <div class="col-md-3">Delivered on 16 Nov 2020</div>
+            </div>
+          </div>
+
+        {% endfor %}
+      {% endfor %}
+      
+   
+   {% endblock content %}
+
+
+
+
+
+
+
+

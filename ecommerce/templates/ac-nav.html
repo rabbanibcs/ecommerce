@@ -2,7 +2,6 @@
    
    {% load static %}
     {% load custom_tags  %}
-   
    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
       <div class="container">
@@ -17,27 +16,25 @@
                 <span class="sr-only">(current)</span>
               </a>
             </li>
+            
             <li class="nav-item">
-              <a class="nav-link" href= {% url 'products' %}>Products</a>
+              <a class="nav-link" href= {% url 'customer_account' %}>Orders</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href= {% url 'about' %}>About Us</a>
+              <a class="nav-link" href= {% url 'view_wishlist' %}>Wishlist({{user|wishlist_total}})</a>
             </li>
            
-          {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href={% url 'customer_account' %}>Account</a>
+              <a class="nav-link" href={% url 'account_login' %}>Reviews</a>
             </li>
-          {% else %}
+             <li class="nav-item">
+              <a class="nav-link" href= {% url 'about' %}>Profile</a>
+            </li>
+           
             <li class="nav-item">
-              <a class="nav-link" href={% url 'account_login' %}>SignIn</a>
+              <a class="nav-link" href={% url 'account_logout' %}>SignOut</a>
             </li>
-            
-            {% comment %} <li class="nav-item">
-              <a class="nav-link" href={% url 'account_signup' %}>SignUp</a>
-            </li> {% endcomment %}
 
-          {% endif %}
             <li class="nav-item">
               <a class="nav-link d-inline-flex" href={% url 'cart' %}>
                 <span class="material-icons">shopping_cart</span>
@@ -46,8 +43,6 @@
                 {% else %}
                   {{request.session.order_item|total_cart_items_}}
                 {% endif %}
-                
-                
               </a>
             </li>
           </ul>

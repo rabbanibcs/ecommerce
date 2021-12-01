@@ -1,5 +1,5 @@
 from django import template
-from core.models import Order
+from core.models import *
 
 register = template.Library()
 
@@ -10,10 +10,7 @@ def total_cart_items(user):
     if qs.exists():
         # print(qs[0].items.count(),' count')
         return qs[0].items.count()
-    
     return 0
-
-
 
 @register.filter()
 def total_cart_items_(cart):
@@ -33,6 +30,15 @@ def get_total_discount_item_price(item,quantity):
 def get_amount_saved(item,quantity):
     return get_total_item_price(item,quantity)-get_total_discount_item_price(item,quantity)
 
+
+@register.filter()
+def items_all(order):
+    return order.items.all().order_by('id')
+
+
+@register.filter()
+def wishlist_total(user):
+    return len(Wishlist.objects.filter(user=user))
 
 
 

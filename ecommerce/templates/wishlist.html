@@ -1,0 +1,52 @@
+ {% extends 'base.html' %}
+
+   {% block title %}<title>Home</title>{% endblock title %}
+
+   {% block content %}
+      {% include 'ac-nav.html' %}
+      <br><br><br>
+      {% for object in objects  %}
+
+          <div class="container mb-3 ">
+            <div class="container d-flex justify-content-between mt-2 pb-3 border-bottom">
+              <div class="col-md-2">
+                <a href="{{item.get_absolute_url}}">
+                  <img width="100px" src="{{object.item.image.url}}" alt="">
+                </a>
+              </div>
+              <div class="col-md-3"><a href="{{object.item.get_absolute_url}}"><h6>{{object.item.title}} </h6></a></div>
+              {% comment %} <div class="col-md-2">Price: ${{object.item.price}}</div> {% endcomment %}
+              <div class="col-md-2">Price:<p class="lead">
+                {% if object.item.discount_price %}
+                <span class="mr-1">
+                  <del>${{ object.item.price }}</del>
+                </span>
+                <span>${{ object.item.discount_price }}</span>
+                {% else %}
+                <span>${{ object.item.price }}</span>
+                {% endif %}
+              </p></div>
+              <div class="col-md-3"> 
+                <a href="{{ object.item.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p mb-1">
+                Add to cart
+                <i class="fas fa-shopping-cart ml-1"></i>
+                </a><br>
+                <a href="{{ object.item.remove_from_wishlist_url }}" class="btn btn-danger btn-md my-0 p">
+                Remove
+                <i class="fas fa-shopping-cart ml-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+      {% endfor %}
+      
+   {% endblock content %}
+
+
+
+
+
+
+
+

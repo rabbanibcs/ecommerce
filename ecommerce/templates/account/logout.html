@@ -5,8 +5,10 @@
 {% block title %}<title>SignOut</title>{% endblock title %}
 
 {% block content %}
+  {% include 'nav.html' %}
+
 <div class='row my-5'>
-<div class='col-md-4 mx-auto'>
+<div class='col-md-4 mx-auto'><br>
 <h1>{% trans "Sign Out" %}</h1>
 
 <p>{% trans 'Are you sure you want to sign out?' %}</p>

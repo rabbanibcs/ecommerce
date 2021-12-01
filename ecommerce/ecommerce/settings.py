@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'core',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -68,11 +68,22 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'statics')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'ecommerce',
+       'USER': 'postgres',
+       'PASSWORD': '123456',
+       'HOST': 'localhost',
+       'PORT': '5432',
+   }
 }
 
 if ENVIRONMENT == 'production':

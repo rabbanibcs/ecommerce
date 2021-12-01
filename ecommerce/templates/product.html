@@ -30,7 +30,8 @@
 
             <div class="mb-3">
               <a href="">
-                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
+                {% comment %} <span class="badge purple mr-1">{{ object.get_category_display }}</span> {% endcomment %}
+                <span class="badge purple mr-1">{{ object.title }}</span>
               </a>
             </div>
 
@@ -56,6 +57,10 @@
             {% if item_in_cart %}
               <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
                 Remove from cart
+              </a>
+            {% else %}
+              <a href="{{ object.get_add_to_wishlist_url }}" class="btn btn-danger btn-md my-0 p">
+                Add to wishlist
               </a>
             {% endif %}
           </div>

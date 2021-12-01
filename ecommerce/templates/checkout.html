@@ -1,28 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
+      {% include 'ac-nav.html' %}
+  <br><br><br>
 
-<div class="container">
+<div class="container ">
   <main>
    
-    <div class="row g-5">
-      <div class="col-md-5 col-lg-4 order-md-last">
+     <div class="row ">
+        <div class="col-md-7 col-lg-8">
        
-     
-        
-      </div>
+          {% if address %}
+            <h6>Default Shipping Address:</h6>
+            <p class="ml-2">{{address.shipping_address}}</p>
+            <p class="ml-2">{{address.phone}}</p>
+          {% else %}
+          <div class="alert alert-warning" role="alert">
+          You have no default Shipping Address!
+          </div>
+        {% endif %}
+        </div>
 
       <div class="col-md-7 col-lg-8">
-<br>
-
         <h4 class="mb-3">Shipping address</h4>
         <form class="needs-validation" method='POST' >
         {% csrf_token %}
           <div class="row g-3">
            
-
-          
-            <div class="col-12">
+            <div class="col-12 mb-2">
               <label for="address" class="form-label">Address</label>
               
               <input name='shipping_address' type="text" class="form-control" id="address" placeholder="1234 Main St" required>
@@ -31,14 +36,10 @@
               </div>
             </div>
 
-            <div class="col-12">
-              <label for="address2" class="form-label">Address 2 <span class="text-muted">(Optional)</span></label>
-              <input name='shipping_address2' type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-            </div>
-
-           
-
-            
+            <div class="col-12 mb-2">
+              <label for="phone" class="form-label">Contact Number </label>
+              <input name='phone' type="text" class="form-control" id="phone" placeholder="01. . ." required>
+            </div> 
 
             <div class="col-md-4">
               <label for="zip" class="form-label">Zip</label>
@@ -52,14 +53,18 @@
           <hr class="my-4">
 
           <div class="form-check">
-            <input name='set_default_shipping' type="checkbox" class="form-check-input" id="same-address">
-            <label class="form-check-label" for="same-address">Set as default shipping address</label>
+            <input name='shipping' value='N' type="radio" class="form-check-input" id="same-address" required>
+            <label class="form-check-label" for="same-address">Set new default shipping address</label>
           </div>
 
+          {% if address %}
           <div class="form-check">
-            <input name='use_default_shipping' type="checkbox" class="form-check-input" id="save-info">
-            <label class="form-check-label" for="save-info">Use default shipping</label>
+            <input name='shipping' value='D' type="radio" class="form-check-input" id="save-info" required>
+            <label class="form-check-label" for="save-info">Use default shipping address</label>
           </div>
+          {% endif %}<br>
+
+
 
           <hr class="my-4">
 
@@ -71,53 +76,23 @@
               <label class="form-check-label" for="credit">Card</label>
             </div> {% endcomment %}
             <div class="form-check">
-              <input id="debit" name="payment_option" value='S'  type="radio" class="form-check-input" required>
+              <input id="stripe" name="payment_option" value='S'  type="radio" class="form-check-input" required>
               <label class="form-check-label" for="debit">Stripe</label>
             </div>
             <div class="form-check">
               <input id="paypal" name="payment_option" value='P'  type="radio" class="form-check-input" required>
               <label class="form-check-label" for="paypal">PayPal</label>
             </div>
+            <div class="form-check">
+              <input id="cash" name="payment_option" value='C'  type="radio" class="form-check-input" required>
+              <label class="form-check-label" for="paypal">Cash On Delivery</label>
+            </div>
           </div>
 
-          {% comment %} <div class="row gy-3">
-            <div class="col-md-6">
-              <label for="cc-name" class="form-label">Name on card</label>
-              <input type="text" class="form-control" id="cc-name" placeholder="" required>
-              <small class="text-muted">Full name as displayed on card</small>
-              <div class="invalid-feedback">
-                Name on card is required
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="cc-number" class="form-label">Credit card number</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required>
-              <div class="invalid-feedback">
-                Credit card number is required
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <label for="cc-expiration" class="form-label">Expiration</label>
-              <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-              <div class="invalid-feedback">
-                Expiration date required
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <label for="cc-cvv" class="form-label">CVV</label>
-              <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-              <div class="invalid-feedback">
-                Security code required
-              </div>
-            </div>
-          </div> {% endcomment %}
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+          <button id="continue" class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
         </form>
       </div>
     </div>
@@ -133,3 +108,25 @@
   </footer>
 </div>
 {% endblock content %}
+{% block script  %}
+<script>  
+
+document.getElementById('save-info').addEventListener("click", function(){
+  document.getElementById('address').required=false
+  document.getElementById('phone').required=false
+  document.getElementById('zip').required=false
+
+})
+document.getElementById('same-address').addEventListener("click", function(){
+document.getElementById('address').required=true
+document.getElementById('phone').required=true
+document.getElementById('zip').required=true
+
+})
+document.getElementById('cash').addEventListener("click", function(){
+document.getElementById('continue').innerHTML='Place Order'
+
+})
+</script>
+
+{% endblock script  %}
